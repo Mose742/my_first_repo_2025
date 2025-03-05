@@ -1,0 +1,396 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"GAPMINDER | DAILY INCOME 2019 AND CHILD MORTALITY RATES 2020\"  \n",
+        "author: Moses Okumu\n",
+        "format: dashboard \n",
+        "theme: flatly \n",
+        "---"
+      ],
+      "id": "16e16dce"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import plotly.express as px\n",
+        "import itables "
+      ],
+      "id": "28d3ed02",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# load data\n",
+        "daily_income = pd.read_csv(\"data/daily_income.csv\",sep=\"\\t\", encoding=\"utf-8\") \n",
+        "#daily_income\n",
+        "\n",
+        "# load data 2\n",
+        "child_mortality = pd.read_csv(\"data/child_mortality.csv\",sep=\"\\t\",encoding=\"utf-8\") \n",
+        "#child_mortality\n",
+        "\n",
+        "# child mortality data\n",
+        "filtered_mortality = child_mortality[[\"country\" , \"2020\"]]\n",
+        "#filtered_mortality"
+      ],
+      "id": "8236bd78",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df_filtered_income = daily_income[[\"country\" , \"2019\"]]\n",
+        "#df_filtered_income"
+      ],
+      "id": "d57667aa",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Find the maximum avg income\n",
+        "max_income_value = df_filtered_income[\"2019\"].max()\n",
+        "max_income_country = df_filtered_income.loc[df_filtered_income[\"2019\"].idxmax(), \"country\"]\n",
+        "#print(max_income_value)\n",
+        "#print(max_income_country)"
+      ],
+      "id": "34afa2c4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Find the minimum avg income\n",
+        "min_income_value = df_filtered_income[\"2019\"].min()\n",
+        "min_income_country = df_filtered_income.loc[df_filtered_income[\"2019\"].idxmin(), \"country\"]\n",
+        "#print(min_income_value)\n",
+        "#print(min_income_country)"
+      ],
+      "id": "66dc8daf",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Compute the ovveral mean\n",
+        "average_overal = round(df_filtered_income[\"2019\"].mean(),2)\n",
+        "#print(average_overal)"
+      ],
+      "id": "70df1c97",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Create the map using plotly express with a blue color scale\n",
+        "map_fig = px.choropleth(\n",
+        "    df_filtered_income,\n",
+        "    locations=\"country\",\n",
+        "    color=\"2019\",\n",
+        "    hover_name=\"country\",\n",
+        "    title=\"Map of Countries by Daily Income\",\n",
+        "    color_continuous_scale=\"Blues\",\n",
+        "    locationmode=\"country names\",  # Ensure Plotly uses country names\n",
+        ").update_layout(coloraxis_showscale=False)\n",
+        "\n",
+        "#map_fig.show()"
+      ],
+      "id": "b691e928",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Largest 15 countries by average daily Income (bar chart) with a blue color scale\n",
+        "top_15 = df_filtered_income.nlargest(15, \"2019\").sort_values(\"2019\", ascending=True)\n",
+        "bar_fig = px.bar(\n",
+        "    top_15,\n",
+        "    x=\"2019\",\n",
+        "    y=\"country\",\n",
+        "    title=\"Daily avg income 15 Largest Countries\",\n",
+        "    color=\"2019\",\n",
+        "    color_continuous_scale=\"Blues\",\n",
+        ").update_layout(coloraxis_showscale=False)\n",
+        "#bar_fig"
+      ],
+      "id": "889a25f8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# DAILY AVERAGE INCOME\n",
+        "\n",
+        "## Row 1 {height=30%}\n",
+        "\n",
+        "::: {.valuebox icon=\"arrow-up\" color=\"#1E90FF\" title=\"Maximum average income\"}\n",
+        "\n",
+        "`{python} str(max_income_value)`\n",
+        "\n",
+        "`{python} max_income_country`\n",
+        "\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox icon=\"arrow-down\" color=\"#87CEFA\" title=\"Minimum average income\"} \n",
+        "\n",
+        "`{python} str(min_income_value)`\n",
+        "\n",
+        "`{python} min_income_country`\n",
+        "\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox icon=\"bar-chart\" color=\"#4682B4\" title=\"Income mean across 2019\"}\n",
+        "\n",
+        "`{python} str(average_overal)`\n",
+        "\n",
+        ":::\n",
+        "\n",
+        "## Row 2 {height=60%}\n",
+        "\n",
+        "### {width=70%}\n"
+      ],
+      "id": "506997d8"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "map_fig"
+      ],
+      "id": "2859114a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### {width=40%}\n"
+      ],
+      "id": "34af1479"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bar_fig"
+      ],
+      "id": "e1eb56b8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# CHILD MORTALITY\n",
+        "\n",
+        "## Row 1 {height=30%}\n"
+      ],
+      "id": "5f3476b1"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Sort by mortality rate in ascending order (lowest rates first)\n",
+        "df_bottom_10 = filtered_mortality.sort_values(by=\"2020\", ascending=True).head(10)\n",
+        "\n",
+        "# Display as an interactive table\n",
+        "display(itables.show(df_bottom_10))"
+      ],
+      "id": "92067936",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Row 2 {height=70%}\n",
+        "\n",
+        "### Column {width=\"80%\"}\n"
+      ],
+      "id": "ef6b9bf6"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "# Clean column names\n",
+        "#df.columns = df.columns.str.strip()\n",
+        "\n",
+        "# Select East African countries\n",
+        "east_africa = [\"Kenya\", \"Tanzania\", \"Uganda\", \"Rwanda\", \"Burundi\"]\n",
+        "df_filtered = child_mortality[child_mortality[\"country\"].isin(east_africa)][[\"country\", \"2020\"]]\n",
+        "\n",
+        "# Convert values to percentages\n",
+        "df_filtered[\"percentage\"] = df_filtered[\"2020\"] / df_filtered[\"2020\"].sum() * 100\n",
+        "\n",
+        "# Plot Stacked Percentage Bar Graph\n",
+        "fig, ax = plt.subplots(figsize=(8, 5))\n",
+        "ax.bar(df_filtered[\"country\"], df_filtered[\"percentage\"], color=[\"blue\", \"green\", \"red\", \"purple\", \"orange\"])\n",
+        "\n",
+        "# Formatting\n",
+        "ax.set_title(\"Child Mortality Distribution in East Africa (2019)\")\n",
+        "ax.set_ylabel(\"Percentage (%)\")\n",
+        "ax.set_xlabel(\"Country\")\n",
+        "\n",
+        "# Show values on bars\n",
+        "for i, v in enumerate(df_filtered[\"percentage\"]):\n",
+        "    ax.text(i, v + 0.5, f\"{v:.2f}%\", ha=\"center\", fontsize=10)\n",
+        "\n",
+        "plt.show()\n"
+      ],
+      "id": "253de725",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Column {width=\"20%\"}\n",
+        "\n",
+        "The bar chart illustrates the distribution of child mortality rates across five East African countries in 2019, expressed as percentages.  \n",
+        "The chart highlights disparities in child mortality within the region, with Burundi and Tanzania experiencing the highest rates. These variations suggest differences in healthcare access, maternal health services, and socio-economic factors. Addressing child mortality requires targeted interventions, improved healthcare infrastructure, and policies to enhance child survival in the most affected countries.\n",
+        "\n",
+        "# RELATIONSHIP\n",
+        "\n",
+        "## Row 1 {height=50%}\n"
+      ],
+      "id": "963c841d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Merge the datasets on 'country'\n",
+        "merged_df = pd.merge(df_filtered_income, filtered_mortality, on='country', how='inner')\n",
+        "\n",
+        "# Display the first few rows\n",
+        "#print(merged_df)"
+      ],
+      "id": "f025e3bc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "  import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "\n",
+        "# Set theme\n",
+        "sns.set_style(\"whitegrid\")\n",
+        "\n",
+        "# Create scatter plot\n",
+        "plt.figure(figsize=(10, 6))\n",
+        "scatter = sns.scatterplot(\n",
+        "    data=merged_df, \n",
+        "    x=\"2019\", \n",
+        "    y=\"2020\", \n",
+        "    hue=\"country\", \n",
+        "    palette=\"viridis\", \n",
+        "    s=120, \n",
+        "    edgecolor=\"black\", \n",
+        "    alpha=0.8,\n",
+        "    legend=False  # Removes the long country list\n",
+        ")\n",
+        "\n",
+        "# Labels and title\n",
+        "plt.xlabel(\"Year 2019\", fontsize=12)\n",
+        "plt.ylabel(\"Year 2020\", fontsize=12)\n",
+        "plt.title(\"Comparison of average daily income in 2019 vs child mortality rate in 2020\", fontsize=14, fontweight=\"bold\")\n",
+        "\n",
+        "# Show plot\n",
+        "#plt.show()"
+      ],
+      "id": "1d1c9474",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Row 2 {height=50%}\n",
+        "\n",
+        "### Column {width=\"80%\"}\n",
+        "\n",
+        "### Column {width=\"20%\"}\n",
+        "\n",
+        "Analysis of the Relationship\n",
+        "The scatter plot illustrates the relationship between average daily income in 2019 and child mortality rate in 2020 across different countries. Key observations:\n",
+        "1.\tNegative Correlation – Higher daily income in 2019 is associated with lower child mortality in 2020.\n",
+        "2.\tClustered Data – Countries with lower incomes (left side of the graph) have a higher variation in child mortality rates, while wealthier countries (right side) show consistently low mortality rates.\n",
+        "3.\tNon-Linear Trend – A sharp drop in child mortality occurs at relatively low income levels, suggesting that even modest income increases significantly impact child survival.\n",
+        "4.\tOutliers – Some countries with very low daily income have exceptionally high child mortality rates, indicating extreme vulnerability.\n",
+        "Recommendations\n",
+        "🔹 Target Low-Income Countries – Prioritize investments in healthcare and social programs for nations with the lowest income levels.\n",
+        "🔹 Improve Healthcare Access – Strengthen maternal and child health services, especially in economically weaker regions.\n",
+        "🔹 Promote Economic Growth – Encourage income-generating activities, microfinance, and employment opportunities to lift families out of poverty.\n",
+        "🔹 Intervene Early – Provide direct child survival interventions (e.g., vaccination, nutrition programs) in the most affected areas.\n",
+        "🔹 Monitor Outliers – Investigate countries with extremely high child mortality rates to identify specific barriers to healthcare and economic development.\n",
+        "Would you like a deeper statistical analysis or policy recommendations?\n",
+        "\n",
+        "\n",
+        "# ABOUT\n",
+        "\n",
+        "**Child Mortality Dataset**\n",
+        "This dataset tracks child mortality rates (deaths per 1,000 live births) across countries, focusing on 2019. It helps analyze regional disparities, assess global child survival progress, and guide policy decisions. Insights from this data support targeted interventions and improvements in healthcare for reducing child mortality rates worldwide.  \n",
+        "\n",
+        "**Daily Income Dataset**\n",
+        "The daily income dataset contains income levels across countries over time, including 2019. It helps assess economic disparities, track poverty trends, and analyze income distribution. By comparing countries, policymakers and researchers can identify regions with low income levels and design strategies for economic development and poverty reduction. \n",
+        "\n",
+        "**Watch Rosling’s Factpod:**\n",
+        "\n",
+        "<iframe width=\"560\" height=\"315\" \n",
+        "        src=\"https://www.youtube.com/embed/IX-BXr8wjsM\" \n",
+        "        title=\"YouTube video player\" \n",
+        "        frameborder=\"0\" \n",
+        "        allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" \n",
+        "        referrerpolicy=\"strict-origin-when-cross-origin\" \n",
+        "        allowfullscreen>\n",
+        "</iframe>"
+      ],
+      "id": "a3d21aa8"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "C:\\Users\\Moses Okumu\\AppData\\Roaming\\Python\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
